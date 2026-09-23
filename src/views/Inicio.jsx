@@ -1,7 +1,30 @@
+import { useState, useEffect } from 'react';
 import foto1 from '../assets/flor.webp';
 import foto2 from '../assets/flor1.jpg';
 import foto3 from '../assets/flor3.avif';
 function Inicio() {
+const [datos, setDatos] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    fetch('https://cl.dolarapi.com/v1/cotizaciones/usd')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(datos => {
+        setDatos(datos);
+        setCargando(false);
+      })
+      .catch(error => {
+        console.error('Error al consultar la API:', error);
+        setErrorMsg(error.message);
+        setCargando(false);
+      });
+  }, []);
   return (
     <>
       <h1 className="text-center my-4">Inicio</h1>
@@ -47,8 +70,36 @@ function Inicio() {
           <span className="visually-hidden">Siguiente</span>
         </button>
       </div>
+
+      <br></br>
+
+      {cargando && (
+        <div className="alert alert-info text-center mx-auto" style={{ maxWidth: '400px' }}>
+          Cargando datos del dólar...
+        </div>
+      )}
+
+      {errorMsg && (
+        <div className="alert alert-danger text-center mx-auto" style={{ maxWidth: '400px' }}>
+          Error al obtener los datos del dólar.
+        </div>
+      )}
+
+      {datos && (
+        <div className="card mx-auto mb-4 p-3 shadow-sm text-center" style={{ maxWidth: '400px' }}>
+          <h5>{datos.nombre} ({datos.moneda})</h5>
+          <hr />
+          <p className="mb-1"><strong>Compra:</strong> ${datos.compra}</p>
+          <p className="mb-1"><strong>Venta:</strong> ${datos.venta}</p>
+          <p className="mb-1"><strong>Último cierre:</strong> ${datos.ultimoCierre}</p>
+          <small className="text-muted mt-2 d-block">
+            <strong>Fecha:</strong> {datos.fechaActualizacion?.substring(0, 10)}
+          </small>
+        </div>
+      )}
     </>
   );
 }
+
 
 export default Inicio;
