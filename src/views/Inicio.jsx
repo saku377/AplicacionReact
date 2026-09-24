@@ -3,11 +3,11 @@ import foto1 from '../assets/flor.webp';
 import foto2 from '../assets/flor1.jpg';
 import foto3 from '../assets/flor3.avif';
 function Inicio() {
-const [datos, setDatos] = useState(null);
+  const [datos, setDatos] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [errorMsg, setErrorMsg] = useState(null);
 
-  useEffect(() => {
+    useEffect(() => {
     fetch('https://cl.dolarapi.com/v1/cotizaciones/usd')
       .then(response => {
         if (!response.ok) {
@@ -33,6 +33,7 @@ const [datos, setDatos] = useState(null);
         className="carousel slide mx-auto" 
         style={{ maxWidth: '800px' }} 
         data-bs-ride="carousel"
+        data-bs-interval="3000"
       >
         <div className="carousel-inner">
           <div className="carousel-item active">
@@ -71,7 +72,7 @@ const [datos, setDatos] = useState(null);
         </button>
       </div>
 
-      <br></br>
+      <br/>
 
       {cargando && (
         <div className="alert alert-info text-center mx-auto" style={{ maxWidth: '400px' }}>
